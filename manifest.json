@@ -1,0 +1,10 @@
+{
+  "name": "ExtinguishInWater",
+  "version_number": "1.0.1",
+  "website_url": "https://github.com/DestroyedClone/PoseHelper/tree/master/ExtinguishInWater",
+  "description": "Jumping into water or being mostly underwater extinguishes you.",
+    "dependencies": [
+        "bbepis-BepInExPack-5.4.2117",
+        "tristanmcpherson-R2API-5.0.5"
+    ]
+}
