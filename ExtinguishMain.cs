@@ -20,12 +20,12 @@ using static ExtinguishInWater.StaticMethods;
 #pragma warning disable CS0618 // Type or member is obsolete
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 #pragma warning restore CS0618 // Type or member is obsolete
+[assembly: HG.Reflection.SearchableAttribute.OptIn]
 
 namespace ExtinguishInWater
 {
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(ModGuid, ModName, ModVer)]
-    [R2APISubmoduleDependency(nameof(CommandHelper))]
     [BepInDependency(R2API.R2API.PluginGUID)]
     public class ExtinguishMain : BaseUnityPlugin
     {
@@ -47,9 +47,6 @@ namespace ExtinguishInWater
             AllowEnemies = Config.Bind("Filter", "Allow Enemies", true, "Allow enemies to get extinguished.");
             Commands = Config.Bind("Other", "Enable Burn Commands", true, "Enable commands to set yourself on fire. More for debugging than anything.");
             PreventUnderwaterIgnition = Config.Bind("Filter", "Prevent Underwater Ignition", true, "Prevent attacks from igniting if the victim is submerged.");
-
-            if (Commands.Value)
-                R2API.Utils.CommandHelper.AddToConsoleWhenReady();
 
             if (AllowPlayers.Value || AllowAllies.Value || AllowEnemies.Value)
             {
@@ -84,6 +81,7 @@ namespace ExtinguishInWater
             var charBody = self.gameObject.GetComponent<CharacterBody>();
             if (charBody && CheckForWater(transform.position)) Extinguish(charBody);
         }
+
         private void ExtinguishInWaterJump(On.RoR2.GlobalEventManager.orig_OnCharacterHitGround orig, GlobalEventManager self, CharacterBody characterBody, Vector3 impactVelocity)
         {
             orig(self, characterBody, impactVelocity);
@@ -103,7 +101,6 @@ namespace ExtinguishInWater
             return characterBody.corePosition + Vector3.up * dist;
         }
 
-
         private bool CheckForWaterOld(Vector3 position, bool below = true)
         {
             if (Physics.Raycast(new Ray(position + Vector3.up * 1.5f, below ? Vector3.down : Vector3.up), out RaycastHit raycastHit, below ? 4f : 8f, LayerIndex.world.mask | LayerIndex.water.mask, QueryTriggerInteraction.Collide))
@@ -120,8 +117,7 @@ namespace ExtinguishInWater
             return false;
         }
 
-
-        [ConCommand(commandName = "burn_self", flags = ConVarFlags.ExecuteOnServer, 
+        [ConCommand(commandName = "burn_self", flags = ConVarFlags.ExecuteOnServer,
             helpText = "burn_self {stacks} {duration}")]
         public static void MyCommandName(ConCommandArgs args)
         {
@@ -145,7 +141,6 @@ namespace ExtinguishInWater
                     Destroy(this);
                 }
             }
-
         }
     }
 }

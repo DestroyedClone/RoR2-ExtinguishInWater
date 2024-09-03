@@ -19,7 +19,6 @@ namespace ExtinguishInWater
 {
     public static class StaticMethods
     {
-
         public static bool CheckForWater(Vector3 position, float castDistance = 8f)
         {
             var layerMask = LayerIndex.world.mask | LayerIndex.water.mask;
@@ -48,6 +47,7 @@ namespace ExtinguishInWater
                     allowExtinguish = AllowEnemies.Value;
             return allowExtinguish;
         }
+
         public static void Extinguish(CharacterBody characterBody)
         {
             if (!AllowedToExtinguish(characterBody)) return;
