@@ -33,19 +33,17 @@ namespace ExtinguishInWater
         public const string ModName = "ExtinguishingWater";
         public const string ModGuid = "com.DestroyedClone.ExtinguishingWater";
 
-        public static SurfaceDef waterSD = Resources.Load<SurfaceDef>("surfacedefs/sdWater");
+        public static SurfaceDef waterSD;
         public static ConfigEntry<bool> AllowPlayers { get; set; }
         public static ConfigEntry<bool> AllowAllies { get; set; }
         public static ConfigEntry<bool> AllowEnemies { get; set; }
         public static ConfigEntry<bool> PreventUnderwaterIgnition { get; set; }
-        public static ConfigEntry<bool> Commands { get; set; }
 
         public void Awake()
         {
             AllowPlayers = Config.Bind("Filter", "Allow Players", true, "Allow players, regardless of team, to get extinguished.");
             AllowAllies = Config.Bind("Filter", "Allow Allies", true, "Allow allies, excluding players, to get extinguished.");
             AllowEnemies = Config.Bind("Filter", "Allow Enemies", true, "Allow enemies to get extinguished.");
-            Commands = Config.Bind("Other", "Enable Burn Commands", true, "Enable commands to set yourself on fire. More for debugging than anything.");
             PreventUnderwaterIgnition = Config.Bind("Filter", "Prevent Underwater Ignition", true, "Prevent attacks from igniting if the victim is submerged.");
 
             if (AllowPlayers.Value || AllowAllies.Value || AllowEnemies.Value)
@@ -54,6 +52,8 @@ namespace ExtinguishInWater
                 On.RoR2.FootstepHandler.Footstep_string_GameObject += ExtinguishFootstep;
                 On.RoR2.DotController.InflictDot_refInflictDotInfo += ExtinguishInflict;
             }
+
+            UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<SurfaceDef>("RoR2/Base/Common/sdWater").Completed += (obj) => { waterSD = obj.Result; };
         }
 
         private void ExtinguishInflict(On.RoR2.DotController.orig_InflictDot_refInflictDotInfo orig, ref InflictDotInfo inflictDotInfo)
